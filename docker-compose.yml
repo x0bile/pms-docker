@@ -1,0 +1,30 @@
+version: '3.5'
+services:
+  plex:
+    container_name: plex
+    image: plexinc/pms-docker
+    restart: unless-stopped
+    environment:
+      - TZ=Pacific/Auckland
+      - PLEX_CLAIM=***REMOVED***
+    network_mode: host
+    volumes:
+      - /home/plex/plex/database:/config
+      - /home/plex/plex/transcode/temp:/transcode
+      - /home/plex/plex/media:/data
+  cloud-media-scripts:
+    container_name: cloud-media-scripts
+    image: madslundt/cloud-media-scripts
+    privileged: true
+    devices:
+     - /dev/fuse
+    cap_add:
+     - MKNOD
+     - SYS_ADMIN
+    volumes:
+      - /home/plex/plex/media/local:/local-media:shared
+      - /home/plex/plex/media/remote:/local-decrypt:shared
+      - /home/plex/plex/media/plexdrive:/chunks
+      - /home/plex/plex/cms-config:/config
+      - /home/plex/plex/logs:/log
+
