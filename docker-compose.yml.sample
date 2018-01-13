@@ -9,14 +9,14 @@ services:
       - AUTH=yes
       - MONGODB_ADMIN_USER=admin
       - MONGODB_ADMIN_PASS=1234
-      - MONGODB_APPLICATION_DATABASE=app
+      - MONGODB_APPLICATION_DATABASE=plexdrive
       - MONGODB_APPLICATION_USER=user
       - MONGODB_APPLICATION_PASS=4321
       # Data volume must be the same as host dir below.
-      - MONGODB_DATA_VOLUME=/data/app
+      - MONGODB_DATA_VOLUME=/data/plex
     volumes:
       # Host dir must be the same as $MONGODB_DATA_VOLUME
-      - /data/app:/data/db
+      - /data/plex:/data/db
   plex:
     container_name: plex
     image: plexinc/pms-docker
@@ -28,19 +28,4 @@ services:
     volumes:
       - /home/plex/plex/database:/config
       - /home/plex/plex/transcode/temp:/transcode
-      - /home/plex/plex/media:/data
-  cloud-media-scripts:
-    container_name: cloud-media-scripts
-    image: madslundt/cloud-media-scripts
-    privileged: true
-    devices:
-     - /dev/fuse
-    cap_add:
-     - MKNOD
-     - SYS_ADMIN
-    volumes:
-      - /home/plex/plex/media/local:/local-media:shared
-      - /home/plex/plex/media/remote:/local-decrypt:shared
-      - /home/plex/plex/media/plexdrive:/chunks
-      - /home/plex/plex/cms-config:/config
-      - /home/plex/plex/logs:/log
+      - /home/plex/cloud-media-scripts/media:/data
